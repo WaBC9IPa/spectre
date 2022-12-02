@@ -73,7 +73,7 @@ export const Table = ({ data }: TableProps) => {
           placeholder="Search"
           value={searchValue}
           onChange={(e) => setSearchValue(e.target.value)}
-        ></input>
+        />
         <button disabled={!data.length} onClick={handleSearch}>
           SEARCH
         </button>

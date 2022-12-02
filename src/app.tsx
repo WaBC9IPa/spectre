@@ -21,7 +21,7 @@ export const App = () => {
                 const keys = Object.keys(item);
                 const newItem = { ...item };
                 keys.forEach((key) => {
-                  if (!Number.isNaN(Number(newItem[key])))
+                  if (newItem[key] && !Number.isNaN(Number(newItem[key])))
                     newItem[key] = Number(newItem[key]);
                 });
 
