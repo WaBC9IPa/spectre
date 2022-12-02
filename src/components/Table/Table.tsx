@@ -1,12 +1,33 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import * as R from 'ramda';
+import { sort, descend, ascend, prop } from 'ramda';
+import styled from 'styled-components';
 
-import { TableHeader } from './TableHeader';
 import { TableBody } from './TableBody';
 
 interface TableProps {
   data: any[];
 }
+
+const TableContainer = styled.div`
+  width: 850px;
+  margin-top: 110px;
+  margin-left: auto;
+  margin-right: auto;
+  font-family: sans-serif;
+  font-weight: 500;
+
+  background-color: #060a17;
+  border-radius: 122px 0px 0px 0px;
+  padding: 25px 36px 25px 14px;
+
+  @media (max-width: 900px) {
+    margin: auto;
+    margin-top: 110px;
+    margin-left: auto;
+    margin-right: auto;
+    width: auto;
+  }
+`;
 
 export const Table = ({ data }: TableProps) => {
   const [formattedData, setFormattedData] = useState<any[]>([]);
@@ -54,10 +75,10 @@ export const Table = ({ data }: TableProps) => {
   useEffect(() => {
     if (orderBy) {
       setOrderedData(
-        R.sort(
+        sort(
           orderDirection === 'down'
-            ? R.descend(R.prop(orderBy))
-            : R.ascend(R.prop(orderBy)),
+            ? descend(prop(orderBy))
+            : ascend(prop(orderBy)),
           formattedData,
         ),
       );
@@ -70,25 +91,41 @@ export const Table = ({ data }: TableProps) => {
     <>
       <div className="search">
         <input
-          placeholder="Search"
+          placeholder="пошук"
           value={searchValue}
           onChange={(e) => setSearchValue(e.target.value)}
         />
         <button disabled={!data.length} onClick={handleSearch}>
-          SEARCH
+          пошук
         </button>
+        <span>сортувати за:</span>
+        <select
+          disabled={!data.length}
+          value={orderBy}
+          onChange={(e) => handleOrder(e.currentTarget.value)}
+        >
+          {data && data[0]
+            ? Object.keys(data[0]).map((key) => (
+                <option
+                  key={key}
+                  value={key}
+                  onClick={() => {
+                    handleOrder(key);
+                  }}
+                >
+                  {key}
+                </option>
+              ))
+            : null}
+        </select>
       </div>
-      <table>
-        <TableHeader
-          data={formattedData}
-          handleOrder={handleOrder}
-          orderBy={orderBy}
-          orderDirection={orderDirection}
-        />
-        <TableBody
-          data={orderedData.length > 0 ? orderedData : formattedData}
-        />
-      </table>
+      <TableContainer>
+        <div>
+          <TableBody
+            data={orderedData.length > 0 ? orderedData : formattedData}
+          />
+        </div>
+      </TableContainer>
     </>
   );
 };
