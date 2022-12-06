@@ -13,12 +13,13 @@ const TableContainer = styled.div`
   margin-top: 110px;
   margin-left: auto;
   margin-right: auto;
-  font-family: sans-serif;
+  font-family: 'Rubik', sans-serif;
   font-weight: 500;
 
-  background-color: #060a17;
-  border-radius: 122px 0px 0px 0px;
-  padding: 25px 36px 25px 14px;
+  background: #060a17;
+  box-shadow: inset 0px 0px 24px rgba(0, 0, 0, 0.35);
+  border-radius: 122px 12px 0px 0px;
+  padding: 20px 30px 20px 20px;
 
   @media (max-width: 900px) {
     margin: auto;
@@ -26,6 +27,10 @@ const TableContainer = styled.div`
     margin-left: auto;
     margin-right: auto;
     width: auto;
+  }
+
+  @media (max-width: 671px) {
+    border-radius: 12px 12px 0px 0px;
   }
 `;
 
@@ -40,16 +45,17 @@ export const Table = ({ data }: TableProps) => {
     setFormattedData(data.filter((item) => item.DATE));
   }, [data]);
 
-  const handleSearch = () => {
+  const handleSearch = (search?: string) => {
+    const searchString = search || searchValue;
     const filtered = data.filter((item) => item.DATE);
-    if (!searchValue) setFormattedData(filtered);
+    if (!searchString) setFormattedData(filtered);
     else
       setFormattedData(
         filtered.filter((item) =>
           Object.keys(item).find((key) =>
             String(item[key] || '')
               .toLowerCase()
-              .includes(searchValue?.toLowerCase()),
+              .includes(searchString?.toLowerCase()),
           ),
         ),
       );
@@ -95,7 +101,7 @@ export const Table = ({ data }: TableProps) => {
           value={searchValue}
           onChange={(e) => setSearchValue(e.target.value)}
         />
-        <button disabled={!data.length} onClick={handleSearch}>
+        <button disabled={!data.length} onClick={() => handleSearch()}>
           пошук
         </button>
         <span>сортувати за:</span>
@@ -122,6 +128,8 @@ export const Table = ({ data }: TableProps) => {
       <TableContainer>
         <div>
           <TableBody
+            handleSearch={handleSearch}
+            setSearchValue={setSearchValue}
             data={orderedData.length > 0 ? orderedData : formattedData}
           />
         </div>
